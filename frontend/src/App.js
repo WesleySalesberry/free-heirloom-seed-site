@@ -10,6 +10,7 @@ import { SeedPage } from './pages/SeedPage';
 import { CartPage } from './pages/CartPage';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { ShippingPage } from './pages/ShippingPage';
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <Route exact path="/" component={HomePage} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
+            <Route exact path="/shipping" component={ShippingPage} />
             <Route exact path="/seed/:slug" component={SeedPage} />
             <Route exact path="/cart/:slug?" component={CartPage} />
           </Switch>

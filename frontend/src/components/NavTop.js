@@ -1,8 +1,21 @@
 import React from 'react'
 import { Navbar, Nav, Container } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
+import { LinkContainer, NavDropdown } from 'react-router-bootstrap'
+
+import { logout } from '../redux/auth/authAction'
+import { useDispatch, useSelector } from 'react-redux'
+import { NavComponent } from './NavComponent'
 
 export const NavTop = () => {
+    const dispatch = useDispatch()
+
+    const auth = useSelector(state => state.auth)
+    const { userInfo } = auth
+
+    const logoutHandler = () => dispatch(logout())
+
+
+
     return (
         
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
@@ -12,14 +25,25 @@ export const NavTop = () => {
                     </LinkContainer>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse className="justify-content-end">
-                        <Nav className="pl-2 ml-auto">
-                            <LinkContainer to="/cart">
-                                <Nav.Link><i className="fas fa-shopping-cart"></i> Cart</Nav.Link>
-                            </LinkContainer>
-                            <LinkContainer to="/login">
-                                <Nav.Link><i className="far fa-user"></i> Login</Nav.Link>
-                            </LinkContainer>
-                        </Nav>
+                        {
+                            !userInfo ? 
+                                <NavComponent
+                                    link={'/login'}
+                                    leadIcon={'far'}
+                                    icon={"user"}
+                                    title={"Log In"}
+                                />
+                            :
+                                <NavComponent
+                                    leadIcon={'fas'}
+                                    link={'/'}
+                                    icon={"sign-out-alt"}
+                                    title={"Log Out"}
+                                    isLoggedIn ={true}
+                                    user={userInfo.name}
+                                    onClick={logoutHandler}
+                                />
+                        }
                     </Navbar.Collapse>
                 </Container>
             </Navbar>

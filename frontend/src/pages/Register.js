@@ -19,11 +19,11 @@ export const Register = ({ location, history }) => {
     const auth = useSelector(state => state.auth)
     const {userInfo, loading, error } = auth
 
-    const redirect = location.search ? location.search.split('=')[1] : '/profile'
+    const redirect = location.search ? location.search.split('=')[1] : '/'
 
     useEffect(() => {
         if(userInfo){
-            history.push(redirect)
+            history.push('/profile')
         }
     }, [history, userInfo, redirect]);
 

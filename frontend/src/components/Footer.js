@@ -28,15 +28,16 @@ export const Footer = () => {
                        
                    </Col>
                    <Col md={4}>
-                       <h4>Retail Partners</h4>
+                    <h4>Retail Partners</h4>
                         <ListGroup variant="flush">
-                           <ListGroup.Item>
-                               <a href="https://www.beadsupply.com/" target="_blank" rel="noopener noreferrer">Bead Supply</a>
+                            <ListGroup.Item>
+                                <a href="https://www.beadsupply.com/" target="_blank" rel="noopener noreferrer">Bead Supply</a>
                             </ListGroup.Item>
                         </ListGroup>
                     </Col>
                 </Row>
-                <p className="text-center py-3">Copyright &copy; {new Date().getFullYear()} By Wesley Salesberry</p>
+                <p className="text-center py-3">Copyright &copy; {new Date().getFullYear()} By <a href="https://www.linkedin.com/in/wessalesberry/" target="_blank" rel="noopener noreferrer">Wesley Salesberry</a></p>
+                
             </Container>   
         </footer>
     )
