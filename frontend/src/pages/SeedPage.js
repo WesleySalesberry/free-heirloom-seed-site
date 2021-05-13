@@ -22,7 +22,7 @@ export const SeedPage = ({ match, history }) => {
 
     return (
         <div>
-            <Link to="/" className="btn-light m-5">Go Back</Link>
+            <Link to="/" className="btn btn-light my-3">Go Back</Link>
             {
                 loading ? 
                     <Loader />

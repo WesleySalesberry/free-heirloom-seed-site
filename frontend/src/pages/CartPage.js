@@ -5,7 +5,7 @@ import { Row, Col, ListGroup, Image, Form, Button, Card, ListGroupItem } from 'r
 import { addToCart, removeItemFromCart, emptyCart } from '../redux/cart/cartAction'
 
 
-export const CartPage = ({ match, history }) => {
+export const CartPage = ({ match, location, history }) => {
     const seedName = match.params.slug
     const dispatch = useDispatch()
     const cart = useSelector(state => state.cart)
@@ -23,6 +23,7 @@ export const CartPage = ({ match, history }) => {
     }
 
     const clearItems = () => dispatch(emptyCart())
+    const checkoutHandler = () => history.push('/login?redirect=shipping')
     
 
     return (
@@ -102,6 +103,7 @@ export const CartPage = ({ match, history }) => {
                             type="button"
                             className="btn-block"
                             disabled={cartItems.length === 0}
+                            onClick={checkoutHandler}
                         >
                             { cartItems.length === 0 ? "Your Cart is empty" : "Proceed To Checkout" }
                         </Button>
@@ -133,7 +135,7 @@ export const CartPage = ({ match, history }) => {
                         <ListGroup variant="flush">
                             <h6> Option 2: Pick Up</h6>
                             <ListGroup.Item>
-                                <p> 12-5 on Monday thru Saturday at:</p>
+                                12-5 on Monday thru Saturday at:
                                 <p>Stone Spirits</p>
                                 <p>865#B - 8th Street</p>
                                 <p>Arcata, CA 95521</p>

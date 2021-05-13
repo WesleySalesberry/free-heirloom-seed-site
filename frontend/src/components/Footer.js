@@ -36,7 +36,7 @@ export const Footer = () => {
                         </ListGroup>
                     </Col>
                 </Row>
-                <p className="text-center py-3">Copyright &copy; {new Date().getFullYear()}</p>
+                <p className="text-center py-3">Copyright &copy; {new Date().getFullYear()} By Wesley Salesberry</p>
             </Container>   
         </footer>
     )

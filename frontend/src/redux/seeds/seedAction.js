@@ -14,7 +14,7 @@ export const seedLists = () => async (dispatch) => {
     try {
         dispatch({ type: SEED_LIST_REQUEST })
 
-        const { data } = await axios.get('http://127.0.0.1:8000/api/v1/seeds/')
+        const { data } = await axios.get('http://127.0.0.1:8000/api/v1/seeds/all-seeds/')
 
         dispatch({
             type: SEED_LIST_SUCCESS,
