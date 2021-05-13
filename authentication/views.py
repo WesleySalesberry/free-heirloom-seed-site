@@ -14,8 +14,14 @@ from django.contrib.auth.hashers import make_password
 
 from rest_framework import status
 
+from django.utils.translation import ugettext_lazy as _
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    default_error_messages = {
+        'no_active_account': _('Email or Password is incorrect!')
+    }
+
     def validate(self, attrs):
         data = super().validate(attrs)
         serializer = UserSerializerWithToken(self.user).data
@@ -30,7 +36,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
-@api_view(['POST'])
+@ api_view(['POST'])
 def register_user(request):
     user_data = request.data
 
@@ -45,7 +51,7 @@ def register_user(request):
         return Response(serializer.data)
 
     except:
-        message = {'message': 'Member with this email already exist'}
+        message = {'message': 'These credentials are already in use.'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -1,36 +1,50 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FormContainer } from '../components/FormContainer'
 import { Form, Button, Row, Col } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 
-export const Register = () => {
+import { useDispatch, useSelector } from 'react-redux'
+import { register } from '../redux/auth/authAction'
+import { Notification } from '../components/Notification'
+
+export const Register = ({ location, history }) => {
     const [ name, setName ] = useState('')
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
     const [ verifyPassword, setVerifiedPassword ] = useState('')
     const [message, setMessage] = useState('')
 
+    const dispatch = useDispatch()
+
+    const auth = useSelector(state => state.auth)
+    const {userInfo, loading, error } = auth
+
+    const redirect = location.search ? location.search.split('=')[1] : '/profile'
+
+    useEffect(() => {
+        if(userInfo){
+            history.push(redirect)
+        }
+    }, [history, userInfo, redirect]);
 
     const submitHandler = (evt) => {
         evt.preventDefault()
         if(password !== verifyPassword){
             setMessage('Passwords Do not match..')
         }else{
-            console.log(
-            `
-            Name: ${name},
-            Email: ${email},
-            Password: ${password}
-            `
-        )
-            }
+            dispatch(register(name, email, password))
+        }
     }
 
     return (
         <FormContainer>
+            
             <h1 className="text-center">Register</h1>
             {
-                message && <h3>{message}</h3> 
+                message && <Notification variant="danger">{message}</Notification>
+            }
+            {
+                error && <Notification variant="danger">{error}</Notification>
             }
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId="name">
@@ -77,6 +91,14 @@ export const Register = () => {
                     Register
                 </Button>
             </Form>
+            <Row className='text-center py-3'>
+                <Col>
+                    Existing Customer? <Link
+                        to={redirect ? `/login?redirect=${redirect}` : '/login'}>
+                        Login
+                        </Link>
+                </Col>
+            </Row>
         </FormContainer>
     )
 }
