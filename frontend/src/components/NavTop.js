@@ -10,7 +10,7 @@ export const NavTop = () => {
     const dispatch = useDispatch()
 
     const auth = useSelector(state => state.auth)
-    const { userInfo } = auth
+    const { userInfo, isLoggedIn } = auth
 
     const logoutHandler = () => dispatch(logout())
 
@@ -26,24 +26,24 @@ export const NavTop = () => {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse className="justify-content-end">
                         {
-                            !userInfo ? 
+                            isLoggedIn ? 
+                                <NavComponent
+                                    leadIcon={'fas'}
+                                    link={'/'}
+                                    icon={"sign-out-alt"}
+                                    title={"Log Out"}
+                                    isLoggedIn ={isLoggedIn}
+                                    user={userInfo.name}
+                                    onClick={logoutHandler}
+                                />
+                            :
                                 <NavComponent
                                     link={'/login'}
                                     leadIcon={'far'}
                                     icon={"user"}
                                     title={"Log In"}
                                 />
-                            :
-                                <NavComponent
-                                    leadIcon={'fas'}
-                                    link={'/'}
-                                    icon={"sign-out-alt"}
-                                    title={"Log Out"}
-                                    isLoggedIn ={true}
-                                    user={userInfo.name}
-                                    onClick={logoutHandler}
-                                />
-                        }
+                        } 
                     </Navbar.Collapse>
                 </Container>
             </Navbar>

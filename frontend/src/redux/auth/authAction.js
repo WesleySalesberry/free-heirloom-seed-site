@@ -10,6 +10,10 @@ import {
     USER_REGISTER_FAIL
 } from '../constants/authConstants'
 
+import {
+    USER_PROFILE_CLEAR 
+} from '../constants/profileConstants'
+
 import axios from 'axios'
 
 export const login = (email, password) => async (dispatch) => {
@@ -87,6 +91,10 @@ export const register = (name, email, password) => async (dispatch) => {
 export const logout = () => dispatch => {
 
     sessionStorage.removeItem('userInfo')
+
+    dispatch({
+        type: USER_PROFILE_CLEAR 
+    })
 
     dispatch({
         type: USER_LOGOUT

@@ -10,13 +10,13 @@ const reducer = combineReducers({
     seedLists: seedListReducer,
     seedDetails: seedDetailReducer,
     cart: cartReducer,
-    auth: authReducer
+    auth: authReducer,
 })
 
 const userInfoStroage = sessionStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem("userInfo")) : []
 
 const initalState = {
-    userLoginData: { userInfo: userInfoStroage }
+    auth: { userInfo: userInfoStroage }
 }
 
 const middleware = [ thunk ]

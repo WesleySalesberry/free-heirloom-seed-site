@@ -14,12 +14,13 @@ export const Login = ({ location, history }) => {
     const dispatch = useDispatch()
 
     const auth = useSelector(state => state.auth)
-    const { userInfo, loading, error } = auth
+    const { userInfo, isLoggedIn, error } = auth
 
     const redirect = location.search ? location.search.split('=')[1] : '/profile'
 
+
     useEffect(() => {
-        if(userInfo){
+        if(isLoggedIn){
             history.push(redirect)
         }
     }, [history, userInfo, redirect])

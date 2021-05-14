@@ -31,7 +31,6 @@ export const removeItemFromCart = id => async (dispatch) => {
 }
 
 export const emptyCart = () => async (dispatch) => {
-    console.log('clearing state')
     dispatch({
         type: CLEAR_CART
     })

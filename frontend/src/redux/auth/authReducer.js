@@ -18,13 +18,15 @@ export const authReducer = (state={}, action) => {
         case USER_LOGIN_REQUEST:
         case USER_REGISTER_REQUEST:
             return{
-                loading: true
+                loading: true,
+                isLoggedIn: false
             }
 
         case USER_LOGIN_SUCCESS:
         case USER_REGISTER_SUCCESS:
             return {
                 loading: false,
+                isLoggedIn: true,
                 userInfo: payload
             }
 
@@ -32,11 +34,14 @@ export const authReducer = (state={}, action) => {
         case USER_REGISTER_FAIL:
             return {
                 loading: false,
+                isLoggedIn: false,
                 error: payload
             }
 
         case USER_LOGOUT:
-            return {}
+            return {
+                isLoggedIn: false,
+            }
             
         default:
             return state
