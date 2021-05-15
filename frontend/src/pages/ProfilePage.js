@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import {Row, Col, Form, Button, Container, Table } from 'react-bootstrap'
 
 import { useDispatch, useSelector } from 'react-redux';
+import { updateUser } from '../redux/auth/authAction'
 
 
 
 export const ProfilePage = ({ history }) => {
-    const [ name, setName ] = useState('')
+    const [ myName, setName ] = useState('')
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
     const [ verifyPassword, setVerifiedPassword ] = useState('')
@@ -19,54 +20,62 @@ export const ProfilePage = ({ history }) => {
     useEffect(() => {
         if(!isLoggedIn){
             history.push('/login')
-        }else{
-            setName(userInfo.name)
-            setEmail(userInfo.email)
         }
-    }, [dispatch, history])
+    }, [dispatch, history, userInfo])
     
     const submitHandler = (evt) => {
         evt.preventDefault()
         console.log(`
-            Name: ${name},
+            Name: ${userInfo.name},
             Email: ${email}
         `)
-    }
-
-    const handleName = (evt) =>{
-        setName(evt.target.value)
-    }
-    const handleEmail = (evt) =>{
-        setEmail(evt.target.value)
+        dispatch(updateUser({
+            'name': myName,
+            'email': email,
+            'password': password
+        }))
     }
     
 
     return (
         <Container>
-            <h2 className="text-center">Welcome {name}!</h2>
-            <Row>
-                
-                <Col md={4}>
-                    <h2 className="text-center">Update Your Infomation</h2>
+            <h2 className="text-center">Welcome {userInfo.name}!</h2>
+            <Row> 
+                <Col md={12}>
+                    <h2 className="text-center">My Orders</h2>
+                    <Table  striped bordered hover className="text-center" variant="dark">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Paid</th>
+                                <th>Delivered</th>
+                            </tr>
+                        </thead>
+                    </Table>
+                </Col>
+            </Row>
+            <Row className="my-4">
+                <Col md={6}>
+                    <h2 className="text-center">Update Your Login Infomation</h2>
                     <Form onSubmit={submitHandler}>
                         <Form.Group controlId="name">
                             <Form.Control
-                                required
                                 type='text'
-                                placeholder='Enter Your Name'
-                                value={name}
-                                onChange={(evt) => handleName(evt)}
+                                placeholder="Update Your Name"
+                                value={myName}
+                                onChange={(evt) => setName(evt.target.value)}
                             >
                             </Form.Control>
                         </Form.Group>
 
                         <Form.Group controlId="email">
                             <Form.Control
-                                required
                                 type='email'
-                                placeholder='Enter Your Email'
+                                placeholder="Update Your Email"
                                 value={email}
-                                onChange={evt => handleEmail(evt)}
+                                onChange={evt => setEmail(evt.target.value)}
                             >
                             </Form.Control>
                         </Form.Group>
@@ -89,19 +98,21 @@ export const ProfilePage = ({ history }) => {
                             >
                             </Form.Control>
                         </Form.Group>
-
+    
                         <Button
                             className="btn-block"
                             type="submit"
                             variant="primary"
                         >Update</Button>
+
+                        <Form.Text className="text-muted">
+                                You will see the changes on next login
+                        </Form.Text>
                     </Form>
                 </Col>
-                
                 <Col md={6}>
-                    <h2 className="text-center">My Orders</h2>
-                    <Table  striped className="text-center">
-                    </Table>
+                    <h2 className="text-center">Update Your Shipping Infomation</h2>
+
                 </Col>
             </Row>
         </Container>
