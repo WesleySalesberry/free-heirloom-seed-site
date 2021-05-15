@@ -1,4 +1,5 @@
 import {
+
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS ,
     USER_LOGIN_FAIL,
@@ -7,7 +8,12 @@ import {
 
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL
+    USER_REGISTER_FAIL,
+
+    USER_UPDATE_REQUEST,
+    USER_UPDATE_SUCCESS,
+    USER_UPDATE_FAIL,
+
 } from '../constants/authConstants'
 
 import {
@@ -99,4 +105,34 @@ export const logout = () => dispatch => {
     dispatch({
         type: USER_LOGOUT
     })
+}
+
+export const updateUser = (user) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_UPDATE_REQUEST
+        })
+        const { auth: { userInfo }} = getState()
+
+        const configs = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put('http://127.0.0.1:8000/api/v1/auth/update/', user, configs)
+
+        dispatch({
+            type: USER_UPDATE_SUCCESS,
+            paylaod: data
+        })
+
+    } catch (error) {
+        // console.log(error.response)
+        dispatch({
+            type: USER_UPDATE_FAIL,
+            payload: error.response
+        })
+    }
 }

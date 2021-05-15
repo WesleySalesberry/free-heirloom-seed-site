@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react'
 import {Row, Col, Form, Button, Container, Table } from 'react-bootstrap'
 
 import { useDispatch, useSelector } from 'react-redux';
+import { ShippingComponenet } from '../components/ShippingComponenet';
 import { updateUser } from '../redux/auth/authAction'
+import { getAddress } from '../redux/shipping/shippingAction';
 
 
 
@@ -17,18 +19,18 @@ export const ProfilePage = ({ history }) => {
     const auth = useSelector(state => state.auth)
     const { userInfo, isLoggedIn } = auth
 
+    const addy = useSelector(state => state.address)
+    const { address } = addy
+
     useEffect(() => {
         if(!isLoggedIn){
             history.push('/login')
         }
+        dispatch(getAddress())
     }, [dispatch, history, userInfo])
     
     const submitHandler = (evt) => {
         evt.preventDefault()
-        console.log(`
-            Name: ${userInfo.name},
-            Email: ${email}
-        `)
         dispatch(updateUser({
             'name': myName,
             'email': email,
@@ -103,7 +105,7 @@ export const ProfilePage = ({ history }) => {
                             className="btn-block"
                             type="submit"
                             variant="primary"
-                        >Update</Button>
+                        >Update {userInfo.name}</Button>
 
                         <Form.Text className="text-muted">
                                 You will see the changes on next login
@@ -112,7 +114,14 @@ export const ProfilePage = ({ history }) => {
                 </Col>
                 <Col md={6}>
                     <h2 className="text-center">Update Your Shipping Infomation</h2>
-
+                    <ShippingComponenet
+                        btnData={"Update Address"}
+                        myAddress={address&&address.address}
+                        myCity={address&&address.city}
+                        myState={address&&address.state}
+                        myZipcode={address&&address.postal_code}
+                        myCountry={address&&address.country}
+                    />
                 </Col>
             </Row>
         </Container>

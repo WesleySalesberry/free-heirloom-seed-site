@@ -7,7 +7,12 @@ import {
 
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL
+    USER_REGISTER_FAIL,
+
+    USER_UPDATE_REQUEST,
+    USER_UPDATE_SUCCESS,
+    USER_UPDATE_FAIL,
+
 } from '../constants/authConstants'
 
 export const authReducer = (state={}, action) => {
@@ -32,6 +37,7 @@ export const authReducer = (state={}, action) => {
 
         case USER_LOGIN_FAIL:
         case USER_REGISTER_FAIL:
+        case USER_UPDATE_FAIL:
             return {
                 loading: false,
                 isLoggedIn: false,
@@ -44,6 +50,23 @@ export const authReducer = (state={}, action) => {
             }
             
         default:
+            return state
+    }
+}
+
+export const userUpdateReducer = (state={ userInfo: {} }, action) => {
+    const { payload, type } = action
+    switch(type){
+        case USER_UPDATE_REQUEST:
+            return {
+                loading: true
+            }
+        case USER_UPDATE_SUCCESS:
+            return{
+                loading: false,
+                userInfo: payload
+            }
+        default: 
             return state
     }
 }

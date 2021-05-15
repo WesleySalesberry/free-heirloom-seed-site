@@ -5,12 +5,14 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { seedListReducer, seedDetailReducer } from './seeds/seedReducer'
 import { cartReducer } from './cart/cartReducer'
 import { authReducer } from './auth/authReducer'
+import { addressReducer } from './shipping/shippingReducer'
 
 const reducer = combineReducers({
     seedLists: seedListReducer,
     seedDetails: seedDetailReducer,
     cart: cartReducer,
     auth: authReducer,
+    address: addressReducer,
 })
 
 const userInfoStroage = sessionStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem("userInfo")) : []
