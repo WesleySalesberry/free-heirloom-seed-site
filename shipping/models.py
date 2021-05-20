@@ -1,10 +1,10 @@
 from django.db import models
 from django.conf import settings
+from authentication.models import CustomerModel
 
 
 class ShippingModel(models.Model):
-    addressee = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    addressee = models.ForeignKey(CustomerModel, on_delete=models.CASCADE)
     address = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
