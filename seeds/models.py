@@ -1,13 +1,15 @@
 from django.db import models
-from django.contrib.auth.models import User
+from authentication.models import CustomerModel
 from cloudinary.models import CloudinaryField
 from django.utils.text import slugify
 from decimal import Decimal
+from django.conf import settings
 from django.utils import timezone
 
 
 class SeedModel(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(
+        CustomerModel, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     image = CloudinaryField('Image')
     seedID = models.CharField(max_length=50)
