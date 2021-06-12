@@ -35,34 +35,34 @@ def get_shipping(request):
 @ensure_csrf_cookie
 def create_shipping(request):
     address = request.data
-    return Response(address)
 
-    # try:
-    #     customer = CustomerModel.objects.get(id=data['id'])
-    #     shipping_address = ShippingModel.objects.create(
-    #         addressee=customer,
-    #         address=address['address'],
-    #         city=address['city'],
-    #         postal_code=address['postal_code'],
-    #         state=address['state'],
-    #         country=address['country']
-    #     )
+    try:
+        shipping_address = ShippingModel.objects.create(
+            addressee=request.user,
+            address=address['address'],
+            city=address['city'],
+            postal_code=address['postal_code'],
+            state=address['state'],
+            country=address['country']
+        )
 
-    #     serializer = ShippingSerializer(shipping_address, many=False)
-    #     return Response(serializer.data)
-    # except:
-    #     message = {'message': 'Field cannot be blank.'}
-    #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        serializer = ShippingSerializer(shipping_address, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'message': 'Field cannot be blank.'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT'])
 @ensure_csrf_cookie
 def update_shipping(request):
     updated_data = request.data
-    print(updated_data)
-    shipping = ShippingModel.objects.get(addressee_id=data['id'])
+    print(f'Address Data: {updated_data}')
+    print(f'User ID: {request.user.id}')
 
-    serializer = ShippingSerializer(shipping, many=False)
+    shipping = ShippingModel.objects.get(addressee_id=request.user.id)
+
+    address_serializer = ShippingSerializer(shipping, many=False).data
 
     if updated_data['address'] != "":
         shipping.address = updated_data['address']
@@ -81,4 +81,4 @@ def update_shipping(request):
 
     shipping.save()
 
-    return Response(serializer.data)
+    return Response(address_serializer)
