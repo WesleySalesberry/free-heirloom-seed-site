@@ -16,7 +16,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_('Email Cannot be Blank'))
 
         user = self.model(
-            email,
+            email=self.normalize_email(email),
             first_name=first_name,
             last_name=last_name
         )

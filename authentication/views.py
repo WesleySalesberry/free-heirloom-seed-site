@@ -1,6 +1,9 @@
 from rest_framework.response import Response
+from django.views.decorators.csrf import ensure_csrf_cookie
 
-from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+
 from .serializer import UserSerializer
 from shipping.serializers import ShippingSerializer
 
@@ -8,62 +11,86 @@ from .models import CustomerModel
 from shipping.models import ShippingModel
 
 from rest_framework.exceptions import AuthenticationFailed
-import jwt
-import datetime
-import os
+
+from .utils import generate_access_token, generate_refresh_token
 
 
-class Register(APIView):
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@ensure_csrf_cookie
+def login_view(request):
 
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+    form = request.data
+    email = form['email']
+    password = form['password']
+
+    if email == "":
+        raise AuthenticationFailed('Email Can not be blank')
+
+    if password == "":
+        raise AuthenticationFailed('Password can not be blank')
+
+    customer = CustomerModel.objects.filter(email=email).first()
+    customer_serializer = UserSerializer(customer, many=False)
+
+    if not customer.check_password(password):
+        raise AuthenticationFailed('No User Found With These Credentals')
+
+    access_token = generate_access_token(customer)
+    refresh_token = generate_refresh_token(customer)
+
+    response = Response()
+
+    response.set_cookie(
+        key='refresh_token', value=refresh_token, httponly=True)
+
+    response.data = {
+        'token': access_token,
+        'customer': customer_serializer.data
+    }
+
+    return response
 
 
-class LoginView(APIView):
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@ensure_csrf_cookie
+def register_view(request):
+    customer = CustomerModel.objects.filter(email=request.data['email'])
+    if customer.exists():
+        raise AuthenticationFailed('User already exist')
 
-    def post(self, request):
-        email = request.data['email']
-        password = request.data['password']
+    new_customer = CustomerModel.objects.create_user(
+        first_name=request.data['first_name'],
+        last_name=request.data['last_name'],
+        email=request.data['email'],
+        password=request.data['password'],
+    )
 
-        customer = CustomerModel.objects.filter(email=email).first()
+    new_customer_serializer = UserSerializer(new_customer, many=False)
 
-        if customer is None:
-            raise AuthenticationFailed('No User Found With These Credentals')
+    context = {
+        'customer': new_customer_serializer.data
+    }
 
-        if not customer.check_password(password):
-            raise AuthenticationFailed('No User Found With These Credentals')
+    return Response(context)
 
-        data = {
-            'id': customer.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.utcnow()
+
+@api_view(['GET'])
+def get_user(request):
+    customer = CustomerModel.objects.filter(first_name=request.user).first()
+    try:
+        address = ShippingModel.objects.get(addressee=customer.id)
+        shipping_serializer = ShippingSerializer(address, many=False).data
+    except ShippingModel.DoesNotExist:
+        shipping_serializer = {
+            "data": "No Address"
         }
 
-        token = jwt.encode(data, os.getenv('SECRET_KEY'),
-                           algorithm='HS256')
+    customer_serializer = UserSerializer(customer, many=False).data
 
-        response = Response()
-        response.set_cookie(key='jwt', value=token, httponly=True)
-
-        return response
-
-
-class UserView(APIView):
-    def get(self, request):
-        token = request.COOKIES.get('jwt')
-        if not token:
-            raise AuthenticationFailed('Unauthenticated')
-        try:
-            data = jwt.decode(token, os.getenv(
-                'SECRET_KEY'), algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated')
-
-        user = CustomerModel.objects.get(id=data['id'])
-
-        user_serializer = UserSerializer(user, many=False)
-
-        return Response(user_serializer.data)
+    context = {
+        "customer": customer_serializer,
+        "shipping": shipping_serializer
+    }
+    return Response(context)
