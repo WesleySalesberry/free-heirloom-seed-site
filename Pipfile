@@ -10,7 +10,6 @@ python-dotenv = "*"
 cloudinary = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
-djangorestframework-simplejwt = "*"
 pyjwt = "*"
 
 [dev-packages]
