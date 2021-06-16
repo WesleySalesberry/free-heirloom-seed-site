@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Button, } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
+import { Nav} from 'react-bootstrap'
 
 import { useDispatch, useSelector } from 'react-redux';
 
 import { FormContainer } from '../components/FormContainer'
 import { FormInputComponent } from '../components/FormInputComponent';
 import { createAddress, updateAddress } from '../redux/shipping/shippingAction';
+import { Notification } from '../components/Notification'
 
 export const ShippingPage = ({ history }) => {
     const dispatch = useDispatch()
     const shipping = useSelector(state => state.address)
 
-    const { address } = shipping
+    const { address, error } = shipping
 
     const [myAddress, setAddress] = useState("")
     const [city, setCity] = useState("")
@@ -21,61 +24,65 @@ export const ShippingPage = ({ history }) => {
 
     const handleFormSubmit = (evt) => {
         evt.preventDefault();
-        if(!address.id){
+        if(address === null){
             dispatch(createAddress(myAddress, city, state, postalCode, country))
-            history.push('/')
+            history.push('/payment')
         }else{
             dispatch(updateAddress(myAddress, city, state, postalCode, country))
-            history.push('/')
+            history.push('/payment')
         }
     }
 
     return (
         <FormContainer>
             {
-                !address.id ? 
+                address === null ? 
                     <h2 className="text-center">Create Address</h2>
                 : 
                     <h2 className="text-center">Update Address</h2>
             }
+            {
+                error ? <Notification>{error}</Notification> : ""
+            }
+
             <Form onSubmit={handleFormSubmit}>
                 <FormInputComponent
                             name={"street"}
                             label={'Street'}
-                            // placeholder={address.address ? `Street on File ${address.address}` : "Enter Street"}
+                            placeholder={address&&address.address ? `Street: ${address.address}` : "Enter Street"}
                             value={myAddress}
                             onChange={(evt) => setAddress(evt.target.value)}
                         />
                         <FormInputComponent
                             name={"city"}
                             label={'City'}
-                            // placeholder={address.city ? `City on File ${address.city}` : "Enter Last Name"}
+                            placeholder={address&&address.city ? `City: ${address.city}` : "Enter Last Name"}
                             value={city}
                             onChange={(evt) => setCity(evt.target.value)}
                         />
                         <FormInputComponent
                             name={"state"}
                             label={'State'}
-                            // placeholder={address.state ? `State on File ${address.state}` : "Enter Last Name"}
+                            placeholder={address&&address.state ? `State: ${address.state}` : "Enter State"}
                             value={state}
                             onChange={(evt) => setState(evt.target.value)}
                         />
                         <FormInputComponent
                             name={"postalCode"}
                             label={'Postal Code'}
-                            // placeholder={address.postal_code ? `Postal Code on File ${address.postal_code}` : "Enter Last Name"}
+                            placeholder={address&&address.postal_code ? `Postal: ${address.postal_code}` : "Enter Postal Code"}
                             value={postalCode}
                             onChange={(evt) => setPostalCode(evt.target.value)}
                         />
                         <FormInputComponent
                             name={"country"}
                             label={'Country'}
-                            // placeholder={address.country ? `Country on File ${address.country}` : "Enter Last Name"}
+                            placeholder={address&&address.country ? `Country: ${address.country}` : "Enter Last Name"}
                             value={country}
                             onChange={(evt) => setCountry(evt.target.value)}
                         />
                         {
-                            !address.id ? 
+                            address === null ? 
                                 <Button
                                     className="btn-block"
                                     type="submit"
@@ -88,11 +95,9 @@ export const ShippingPage = ({ history }) => {
                                         type="submit"
                                         variant="primary"
                                     >Update Address</Button>
-                                    <Button
-                                        className="btn-block"
-                                        type="submit"
-                                        variant="primary"
-                                    >Update Address</Button>
+                                    <LinkContainer to="/payment">
+                                        <Nav.Link>Use this address</Nav.Link>
+                                    </LinkContainer>
                                 </>
                         }
             </Form>
