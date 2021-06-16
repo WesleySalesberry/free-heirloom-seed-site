@@ -32,37 +32,40 @@ def get_shipping(request):
 
 
 @api_view(['POST'])
-@ensure_csrf_cookie
 def create_shipping(request):
     address = request.data
+    user = request.user
+    # ShippingModel.MultipleObjectsReturned
+    user_address = ShippingModel.objects.filter(addressee=user)
 
-    try:
-        shipping_address = ShippingModel.objects.create(
-            addressee=request.user,
-            address=address['address'],
-            city=address['city'],
-            postal_code=address['postal_code'],
-            state=address['state'],
-            country=address['country']
-        )
+    if not user_address.exists():
+        try:
+            shipping_address = ShippingModel.objects.create(
+                addressee=user,
+                address=address['address'],
+                city=address['city'],
+                postal_code=address['postal_code'],
+                state=address['state'],
+                country=address['country']
+            )
 
-        serializer = ShippingSerializer(shipping_address, many=False)
-        return Response(serializer.data)
-    except:
-        message = {'message': 'Field cannot be blank.'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+            serializer = ShippingSerializer(shipping_address, many=False)
+            return Response(serializer.data)
+        except:
+            message = {'message': 'Field cannot be blank.'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+    message = {'message': "You already have an address on file"}
+    return Response(message)
 
 
 @api_view(['PUT'])
-@ensure_csrf_cookie
 def update_shipping(request):
     updated_data = request.data
     print(f'Address Data: {updated_data}')
     print(f'User ID: {request.user.id}')
 
     shipping = ShippingModel.objects.get(addressee_id=request.user.id)
-
-    address_serializer = ShippingSerializer(shipping, many=False).data
 
     if updated_data['address'] != "":
         shipping.address = updated_data['address']
@@ -80,5 +83,6 @@ def update_shipping(request):
         shipping.country = updated_data['country']
 
     shipping.save()
+    address_serializer = ShippingSerializer(shipping, many=False).data
 
     return Response(address_serializer)
