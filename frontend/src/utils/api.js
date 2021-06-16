@@ -67,13 +67,14 @@ class API {
 
     async updateUser(firstName, lastName, email){
         try {
-            await this.axiosInstance.put('auth/update-user/',{
+            const { data } = await this.axiosInstance.put('auth/update-user/',{
                 'first_name': firstName,
                 'last_name': lastName,
                 'email': email
             })
+            return data
         } catch (error) {
-            
+            console.log(error)
         }
     }
 
