@@ -93,6 +93,8 @@ export const register = (first_name, last_name, email, password) => async (dispa
 export const logout = () => dispatch => {
 
     sessionStorage.removeItem('token')
+    sessionStorage.removeItem('user')
+    sessionStorage.removeItem('address')
 
     dispatch({
         type: CLEAR_CART
