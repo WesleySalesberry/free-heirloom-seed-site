@@ -2,46 +2,54 @@ import React, { useState, useEffect } from 'react'
 import {Row, Col, Form, Button, Container, Table } from 'react-bootstrap'
 
 import { useDispatch, useSelector } from 'react-redux';
-import { ShippingComponenet } from '../components/ShippingComponenet';
+
 import { updateUser } from '../redux/auth/authAction'
-import { getAddress } from '../redux/shipping/shippingAction';
+import { updateAddress } from '../redux/shipping/shippingAction';
+
+import { FormInputComponent } from '../components/FormInputComponent';
+import { Notification } from '../components/Notification';
 
 
 
 export const ProfilePage = ({ history }) => {
-    const [ myName, setName ] = useState('')
-    const [ email, setEmail ] = useState('')
-    const [ password, setPassword ] = useState('')
-    const [ verifyPassword, setVerifiedPassword ] = useState('')
-
-    const dispatch = useDispatch()
-
     const auth = useSelector(state => state.auth)
-    const { userInfo, isLoggedIn } = auth
+    const { user } = auth
 
     const addy = useSelector(state => state.address)
     const { address } = addy
 
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [email, setEmail] = useState("")
+    const [myAddress, setAddress] = useState("")
+    const [city, setCity] = useState("")
+    const [state, setState] = useState("")
+    const [postalCode, setPostalCode] = useState("")
+    const [country, setCountry] = useState("")
+    const dispatch = useDispatch()
+
     useEffect(() => {
-        if(!isLoggedIn){
+        if(!user){
             history.push('/login')
         }
-        dispatch(getAddress())
-    }, [dispatch, history, userInfo])
+    }, [history, user])
     
-    const submitHandler = (evt) => {
+    const handleUserUpdate = (evt) => {
         evt.preventDefault()
-        dispatch(updateUser({
-            'name': myName,
-            'email': email,
-            'password': password
-        }))
+        dispatch(updateUser(firstName, lastName, email))
+        history.push('/profile')
+    }
+
+    const handleAddressUpdate = (evt) => {
+        evt.preventDefault()
+        dispatch(updateAddress(myAddress, city, state, postalCode, country))
     }
     
-
     return (
         <Container>
-            <h2 className="text-center">Welcome {userInfo.name}!</h2>
+            <h2 className="text-center">Welcome {
+                user&&user.first_name
+            }!</h2>
             <Row> 
                 <Col md={12}>
                     <h2 className="text-center">My Orders</h2>
@@ -59,69 +67,86 @@ export const ProfilePage = ({ history }) => {
                 </Col>
             </Row>
             <Row className="my-4">
+                {/* {
+                    error && <Notification variant="danger">{error}</Notification>
+                } */}
                 <Col md={6}>
-                    <h2 className="text-center">Update Your Login Infomation</h2>
-                    <Form onSubmit={submitHandler}>
-                        <Form.Group controlId="name">
-                            <Form.Control
-                                type='text'
-                                placeholder="Update Your Name"
-                                value={myName}
-                                onChange={(evt) => setName(evt.target.value)}
-                            >
-                            </Form.Control>
-                        </Form.Group>
-
-                        <Form.Group controlId="email">
-                            <Form.Control
-                                type='email'
-                                placeholder="Update Your Email"
-                                value={email}
-                                onChange={evt => setEmail(evt.target.value)}
-                            >
-                            </Form.Control>
-                        </Form.Group>
-
-                        <Form.Group controlId="password">
-                            <Form.Control
-                                type='password'
-                                placeholder='Enter Your Password'
-                                value={password}
-                                onChange={evt => setPassword(evt.target.value)}
-                            >
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId='verifyPassword'>
-                            <Form.Control
-                                type='password'
-                                placeholder='Confirm Your Password'
-                                value={verifyPassword}
-                                onChange={(evt) => setVerifiedPassword(evt.target.value)}
-                            >
-                            </Form.Control>
-                        </Form.Group>
-    
+                    <h2 className="text-center">Update Login Infomation</h2>
+                    <Form onSubmit={handleUserUpdate}>
+                        <FormInputComponent
+                            name={"firstName"}
+                            label={'First Name'}
+                            // placeholder={user.first_name ? `Name on File ${user.first_name}` : "Enter Last Name"}
+                            value={firstName}
+                            onChange={(evt) => setFirstName(evt.target.value)}
+                        />
+                        <FormInputComponent
+                            name={"lastName"}
+                            label={'Last Name'}
+                            // placeholder={user.last_name ? `Name currently on File ${user.last_name}` : "Enter Last Name"}
+                            value={lastName}
+                            onChange={(evt) => setLastName(evt.target.value)}
+                        />
+                        <FormInputComponent
+                            name={"email"}
+                            label={'Email'}
+                            // placeholder={user.email ? `Email on File ${user.email}` : "Enter Last Name"}
+                            value={email}
+                            onChange={(evt) => setEmail(evt.target.value)}
+                        />
                         <Button
                             className="btn-block"
                             type="submit"
                             variant="primary"
-                        >Update {userInfo.name}</Button>
-
-                        <Form.Text className="text-muted">
-                                You will see the changes on next login
-                        </Form.Text>
+                        >Update</Button>
+                        
                     </Form>
                 </Col>
                 <Col md={6}>
-                    <h2 className="text-center">Update Your Shipping Infomation</h2>
-                    <ShippingComponenet
-                        btnData={"Update Address"}
-                        myAddress={address&&address.address}
-                        myCity={address&&address.city}
-                        myState={address&&address.state}
-                        myZipcode={address&&address.postal_code}
-                        myCountry={address&&address.country}
-                    />
+                    <h2 className="text-center">Update Shipping Infomation</h2>
+                    <Form onSubmit={handleAddressUpdate}>
+                        <FormInputComponent
+                            name={"street"}
+                            label={'Street'}
+                            // placeholder={address.address ? `Street on File ${address.address}` : "Enter Street"}
+                            value={myAddress}
+                            onChange={(evt) => setAddress(evt.target.value)}
+                        />
+                        <FormInputComponent
+                            name={"city"}
+                            label={'City'}
+                            // placeholder={address.city ? `City on File ${address.city}` : "Enter Last Name"}
+                            value={city}
+                            onChange={(evt) => setCity(evt.target.value)}
+                        />
+                        <FormInputComponent
+                            name={"state"}
+                            label={'State'}
+                            // placeholder={address.state ? `State on File ${address.state}` : "Enter Last Name"}
+                            value={state}
+                            onChange={(evt) => setState(evt.target.value)}
+                        />
+                        <FormInputComponent
+                            name={"postalCode"}
+                            label={'Postal Code'}
+                            // placeholder={address.postal_code ? `Postal Code on File ${address.postal_code}` : "Enter Last Name"}
+                            value={postalCode}
+                            onChange={(evt) => setPostalCode(evt.target.value)}
+                        />
+                        <FormInputComponent
+                            name={"country"}
+                            label={'Country'}
+                            // placeholder={address.country ? `Country on File ${address.country}` : "Enter Last Name"}
+                            value={country}
+                            onChange={(evt) => setCountry(evt.target.value)}
+                        />
+                        <Button
+                            className="btn-block"
+                            type="submit"
+                            variant="primary"
+                        >Update</Button>
+                        
+                    </Form>
                 </Col>
             </Row>
         </Container>

@@ -8,7 +8,8 @@ import { register } from '../redux/auth/authAction'
 import { Notification } from '../components/Notification'
 
 export const Register = ({ location, history }) => {
-    const [ name, setName ] = useState('')
+    const [ first_name, setFirst_Name ] = useState('')
+    const [ last_name, setLast_Name ] = useState('')
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
     const [ verifyPassword, setVerifiedPassword ] = useState('')
@@ -17,22 +18,23 @@ export const Register = ({ location, history }) => {
     const dispatch = useDispatch()
 
     const auth = useSelector(state => state.auth)
-    const {userInfo, isLoggedIn, error } = auth
+    const { error } = auth
 
-    const redirect = location.search ? location.search.split('=')[1] : '/profile'
+    // const redirect = location.search ? location.search.split('=')[1] : '/'
 
-    useEffect(() => {
-        if(isLoggedIn){
-            history.push(redirect)
-        }
-    }, [history, userInfo, redirect]);
+    // useEffect(() => {
+    //     if(isLoggedIn){
+    //         history.push('/login')
+    //     }
+    // }, [history]);
 
     const submitHandler = (evt) => {
         evt.preventDefault()
         if(password !== verifyPassword){
             setMessage('Passwords Do not match..')
         }else{
-            dispatch(register(name, email, password))
+            dispatch(register(first_name, last_name, email, password))
+            history.push('/login')
         }
     }
 
@@ -47,13 +49,22 @@ export const Register = ({ location, history }) => {
                 error && <Notification variant="danger">{error}</Notification>
             }
             <Form onSubmit={submitHandler}>
-                <Form.Group controlId="name">
+                <Form.Group controlId="first_name">
                     <Form.Control
                         required
                         type='text'
-                        placeholder="Name"
-                        value={name}
-                        onChange={evt => setName(evt.target.value)}
+                        placeholder="First Name"
+                        value={first_name}
+                        onChange={evt => setFirst_Name(evt.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+                <Form.Group controlId="last_name">
+                    <Form.Control
+                        type='text'
+                        placeholder="Last Name"
+                        value={last_name}
+                        onChange={evt => setLast_Name(evt.target.value)}
                     >
                     </Form.Control>
                 </Form.Group>
@@ -94,7 +105,7 @@ export const Register = ({ location, history }) => {
             <Row className='text-center py-3'>
                 <Col>
                     Existing Customer? <Link
-                        to={redirect ? `/login?redirect=${redirect}` : '/login'}>
+                        to='/login'>
                         Login
                         </Link>
                 </Col>

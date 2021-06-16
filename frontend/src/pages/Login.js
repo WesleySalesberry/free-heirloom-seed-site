@@ -4,7 +4,7 @@ import { Form, Button, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { login } from '../redux/auth/authAction'
+import { login, profile } from '../redux/auth/authAction'
 import { Notification } from '../components/Notification'
 
 export const Login = ({ location, history }) => {
@@ -14,29 +14,29 @@ export const Login = ({ location, history }) => {
     const dispatch = useDispatch()
 
     const auth = useSelector(state => state.auth)
-    const { userInfo, isLoggedIn, error } = auth
+    const { user, error } = auth
 
     const redirect = location.search ? location.search.split('=')[1] : '/profile'
 
 
     useEffect(() => {
-        if(isLoggedIn){
+        if(user){
             history.push(redirect)
         }
-    }, [history, userInfo, redirect])
+    }, [history, user, redirect])
 
     const submitHandler = (evt) => {
         evt.preventDefault()
         dispatch(login(email, password))
-        
     }
+    
     return (
         <FormContainer>
             <h1 className="text-center">Sign In</h1>
             {
                 error && <Notification
                             variant="danger"
-                         >{error}</Notification>
+                        >{error}</Notification>
             }
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId="email">
@@ -64,7 +64,7 @@ export const Login = ({ location, history }) => {
             <Row className="py-3">
                 <Col>
                     <div className="text-center">
-                        <p>Need an Account? <Link to={redirect ? `/register?redirect=${redirect}`: '/register'}> Register Here!</Link></p> 
+                        <p>Need an Account? <Link to={redirect ? `/register?redirect=login`: '/register'}> Register Here!</Link></p> 
                         
                     </div>
                 </Col>
@@ -72,3 +72,22 @@ export const Login = ({ location, history }) => {
         </FormContainer>
     )
 }
+
+
+// const fetchData = async (email, password) => {
+//             return  await fetch(
+//             'http://127.0.0.1:8000/api/v1/auth/login/',
+//             {
+//                 method: 'POST',
+//                 credentials: 'same-origin',
+//                 headers: {'Content-Type': 'application/json'},
+//                 body: JSON.stringify({
+//                     email,
+//                     password
+//                 })
+//             }).then(res => {
+//                 if(res.ok) return res
+//             })
+
+//         }
+//         const response = fetchData(email, password)
