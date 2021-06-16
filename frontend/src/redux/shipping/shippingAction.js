@@ -41,19 +41,17 @@ export const getAddress = () => async (dispatch) => {
 export const createAddress = (street, city, postalCode, state, country) => async (dispatch) => {
     try {
         dispatch({
-        type: ADDRESS_CREATE_REQUEST
-    })
+            type: ADDRESS_CREATE_REQUEST
+        })
 
-    const data = await api.createAddress(street, city, postalCode, state, country)
+        const data = await api.createAddress(street, city, postalCode, state, country)
 
-    console.log(data)
         dispatch({
             type: ADDRESS_CREATE_SUCCESS,
             payload: data
         })
 
     } catch (error) {
-        console.log(error)
         dispatch({
             type: ADDRESS_CREATE_FAIL,
             payload: error.response.data
