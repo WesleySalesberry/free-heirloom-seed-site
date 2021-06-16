@@ -8,10 +8,10 @@ from .models import CustomerModel
 # custom-authentication: https://www.django-rest-framework.org/api-guide/authentication/
 
 
-class CSRFCheck(CsrfViewMiddleware):
-    def _reject(self, request, reason):
-        # Return the failure reason instead of an HttpResponse
-        return reason
+# class CSRFCheck(CsrfViewMiddleware):
+#     def _reject(self, request, reason):
+#         # Return the failure reason instead of an HttpResponse
+#         return reason
 
 
 class SafeJWTAuthentication(BaseAuthentication):
@@ -35,6 +35,7 @@ class SafeJWTAuthentication(BaseAuthentication):
 
         except jwt.ExpiredSignatureError:
             raise exceptions.AuthenticationFailed('access_token expired')
+
         except IndexError:
             raise exceptions.AuthenticationFailed('Token prefix missing')
 
@@ -42,21 +43,18 @@ class SafeJWTAuthentication(BaseAuthentication):
         if user is None:
             raise exceptions.AuthenticationFailed('User not found')
 
-        if not user.is_active:
-            raise exceptions.AuthenticationFailed('user is inactive')
-
-        self.enforce_csrf(request)
+        # self.enforce_csrf(request)
         return (user, None)
 
-    def enforce_csrf(self, request):
-        """
-        Enforce CSRF validation
-        """
-        check = CSRFCheck()
-        # populates request.META['CSRF_COOKIE'], which is used in process_view()
-        check.process_request(request)
-        reason = check.process_view(request, None, (), {})
-        print(reason)
-        if reason:
-            # CSRF failed, bail with explicit error message
-            raise exceptions.PermissionDenied('CSRF Failed: %s' % reason)
+    # def enforce_csrf(self, request):
+    #     """
+    #     Enforce CSRF validation
+    #     """
+    #     check = CSRFCheck()
+    #     # populates request.META['CSRF_COOKIE'], which is used in process_view()
+    #     check.process_request(request)
+    #     reason = check.process_view(request, None, (), {})
+
+    #     if reason:
+    #         # CSRF failed, bail with explicit error message
+    #         raise exceptions.PermissionDenied('CSRF Failed: %s' % reason)

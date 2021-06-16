@@ -17,7 +17,6 @@ from .utils import generate_access_token, generate_refresh_token
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@ensure_csrf_cookie
 def login_view(request):
 
     form = request.data
@@ -31,22 +30,19 @@ def login_view(request):
         raise AuthenticationFailed('Password can not be blank')
 
     customer = CustomerModel.objects.filter(email=email).first()
-    customer_serializer = UserSerializer(customer, many=False)
 
     if not customer.check_password(password):
         raise AuthenticationFailed('No User Found With These Credentals')
 
     access_token = generate_access_token(customer)
     refresh_token = generate_refresh_token(customer)
-
     response = Response()
 
     response.set_cookie(
-        key='refresh_token', value=refresh_token, httponly=True)
+        key='refresh_token', value=refresh_token, httponly=True,  samesite='None', secure=True)
 
     response.data = {
-        'token': access_token,
-        'customer': customer_serializer.data
+        'token': access_token
     }
 
     return response
@@ -54,7 +50,6 @@ def login_view(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@ensure_csrf_cookie
 def register_view(request):
     customer = CustomerModel.objects.filter(email=request.data['email'])
     if customer.exists():
@@ -83,9 +78,7 @@ def get_user(request):
         address = ShippingModel.objects.get(addressee=customer.id)
         shipping_serializer = ShippingSerializer(address, many=False).data
     except ShippingModel.DoesNotExist:
-        shipping_serializer = {
-            "data": "No Address"
-        }
+        shipping_serializer = None
 
     customer_serializer = UserSerializer(customer, many=False).data
 
@@ -94,3 +87,30 @@ def get_user(request):
         "shipping": shipping_serializer
     }
     return Response(context)
+
+
+@api_view(['PUT'])
+def update_user(request):
+    id = request.user.id
+    update = request.data
+
+    customer = CustomerModel.objects.get(id=id)
+
+    if update['first_name'] != "":
+        customer.first_name = update['first_name']
+
+    if update['last_name'] != "":
+        customer.last_name = update['last_name']
+
+    if update['email'] != "":
+        customer.email = update['email']
+
+    """TODO: need to figure out how to encrypt saved password"""
+    # if update['password'] != "":
+    #     customer.password = update["password"]
+
+    customer.save()
+
+    customer_serializer = UserSerializer(customer, many=False).data
+
+    return Response(customer_serializer)
