@@ -9,6 +9,11 @@ import {
     USER_REGISTER_SUCCESS,
     USER_REGISTER_FAIL,
 
+    USER_PROFILE_REQUEST, 
+    USER_PROFILE_SUCCESS, 
+    USER_PROFILE_FAIL,
+    USER_PROFILE_CLEAR,
+
     USER_UPDATE_REQUEST,
     USER_UPDATE_SUCCESS,
     USER_UPDATE_FAIL,
@@ -24,15 +29,21 @@ export const authReducer = (state={}, action) => {
         case USER_REGISTER_REQUEST:
             return{
                 loading: true,
-                isLoggedIn: false
             }
-
-        case USER_LOGIN_SUCCESS:
         case USER_REGISTER_SUCCESS:
             return {
                 loading: false,
-                isLoggedIn: true,
-                userInfo: payload
+            }
+
+        case USER_LOGIN_SUCCESS:
+            return {
+                loading: false,
+                user: payload
+            }
+
+        case USER_REGISTER_SUCCESS:
+            return {
+                loading: false,
             }
 
         case USER_LOGIN_FAIL:
@@ -40,31 +51,30 @@ export const authReducer = (state={}, action) => {
         case USER_UPDATE_FAIL:
             return {
                 loading: false,
-                isLoggedIn: false,
                 error: payload
             }
 
         case USER_LOGOUT:
-            return {
-                isLoggedIn: false,
-            }
+            return {}
             
         default:
             return state
     }
 }
 
-export const userUpdateReducer = (state={ userInfo: {} }, action) => {
+export const userUpdateReducer = (state={ user: {} }, action) => {
     const { payload, type } = action
     switch(type){
+        
         case USER_UPDATE_REQUEST:
             return {
                 loading: true
             }
+
         case USER_UPDATE_SUCCESS:
             return{
                 loading: false,
-                userInfo: payload
+                user: payload
             }
         default: 
             return state

@@ -15,10 +15,12 @@ const reducer = combineReducers({
     address: addressReducer,
 })
 
-const userInfoStroage = sessionStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem("userInfo")) : []
+const userStroage = JSON.parse(sessionStorage.getItem('user'))
+const addressStroage = JSON.parse(sessionStorage.getItem('address'))
 
 const initalState = {
-    auth: { userInfo: userInfoStroage }
+    auth: {user: userStroage}, 
+    address: {address: addressStroage}
 }
 
 const middleware = [ thunk ]

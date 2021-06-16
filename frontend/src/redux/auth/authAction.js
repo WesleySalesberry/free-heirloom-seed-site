@@ -10,78 +10,73 @@ import {
     USER_REGISTER_SUCCESS,
     USER_REGISTER_FAIL,
 
+    USER_PROFILE_REQUEST, 
+    USER_PROFILE_SUCCESS, 
+    USER_PROFILE_FAIL,
+
+    USER_PROFILE_CLEAR,
+
     USER_UPDATE_REQUEST,
     USER_UPDATE_SUCCESS,
     USER_UPDATE_FAIL,
 
 } from '../constants/authConstants'
 
-import {
-    USER_PROFILE_CLEAR 
-} from '../constants/profileConstants'
+import { ADDRESS_SUCCESS, ADDRESS_CLEAR, ADDRESS_REQUEST } from "../constants/shippingConstants";
 
-import axios from 'axios'
+import { CLEAR_CART } from '../constants/cartConstants'
+
+import api from '../../utils/api'
 
 export const login = (email, password) => async (dispatch) => {
     try {
         dispatch({
             type: USER_LOGIN_REQUEST
         })
+        
+        const auth = await api.login(email, password)
+        
+        let customer
+        if(auth.token){
+            customer = await api.getUser()
 
-        const configs = {
-            headers: {
-                'Content-type': 'application/json'
-            }
+            dispatch({
+                type: USER_LOGIN_SUCCESS,
+                payload: customer.customer
+            })
+        }
+        if(customer.shipping !== null){
+            dispatch({
+                type: ADDRESS_REQUEST
+            })
+
+            dispatch({
+                type: ADDRESS_SUCCESS,
+                payload: customer.shipping
+            })
         }
 
-        const { data } = await axios.post(
-            'http://127.0.0.1:8000/api/v1/auth/login/',
-            { 'username': email, 'password': password },
-            configs
-        )
-
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
-
-        //Set Session storage so that when inproper log out or when the browser is closed it will dump all data 
-        sessionStorage.setItem('userInfo', JSON.stringify(data))
 
     } catch (error) {
-        
         dispatch({
             type: USER_LOGIN_FAIL,
-            payload: error.response.data.detail 
-        })
-        
+            payload: error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+                
+        }) 
     }
 }
 
-export const register = (name, email, password) => async (dispatch) => {
+export const register = (first_name, last_name, email, password) => async (dispatch) => {
     try {
         dispatch({
             type:  USER_REGISTER_REQUEST
         })
-
-        const configs = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
-
-        const { data } = await axios.post(
-            'http://127.0.0.1:8000/api/v1/auth/register/',
-            { 'name': name, 'email': email, 'password': password },
-            configs
-        )
-        
+        await api.register(first_name, last_name, email, password)
         dispatch({
-            type: USER_REGISTER_SUCCESS,
-            payload: data
+            type: USER_REGISTER_SUCCESS 
         })
-
-        
 
     } catch (error) {
         dispatch({
@@ -91,37 +86,39 @@ export const register = (name, email, password) => async (dispatch) => {
                 : error.message
         })
         
-    }
+    }  
 }
+
 
 export const logout = () => dispatch => {
 
-    sessionStorage.removeItem('userInfo')
+    sessionStorage.removeItem('token')
+
+    dispatch({
+        type: CLEAR_CART
+    })
 
     dispatch({
         type: USER_PROFILE_CLEAR 
     })
 
     dispatch({
+        type: ADDRESS_CLEAR
+    })
+
+    dispatch({
         type: USER_LOGOUT
     })
+    
 }
 
-export const updateUser = (user) => async (dispatch, getState) => {
+export const updateUser = (first_name, last_name, email) => async (dispatch) => {
     try {
         dispatch({
             type: USER_UPDATE_REQUEST
         })
-        const { auth: { userInfo }} = getState()
 
-        const configs = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
-
-        const { data } = await axios.put('http://127.0.0.1:8000/api/v1/auth/update/', user, configs)
+        const { data } = await api.updateUser(first_name, last_name, email)
 
         dispatch({
             type: USER_UPDATE_SUCCESS,

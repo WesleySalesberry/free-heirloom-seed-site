@@ -8,13 +8,13 @@ import {
     SEED_DETAIL_FAIL
 } from '../constants/seedConstants'
 
-import axios from 'axios'
+import api from '../../utils/api'
 
 export const seedLists = () => async (dispatch) => {
     try {
         dispatch({ type: SEED_LIST_REQUEST })
 
-        const { data } = await axios.get('http://127.0.0.1:8000/api/v1/seeds/all-seeds/')
+        const data = await api.seeds()
 
         dispatch({
             type: SEED_LIST_SUCCESS,
@@ -34,7 +34,7 @@ export const seedDetails = (slug) => async (dispatch) => {
     try {
         dispatch({ type: SEED_DETAIL_REQUEST })
 
-        const { data } = await axios.get(`http://127.0.0.1:8000/api/v1/seeds/${slug}/`)
+        const data = await api.singleSeed(slug)
 
         dispatch({
             type: SEED_DETAIL_SUCCESS,
