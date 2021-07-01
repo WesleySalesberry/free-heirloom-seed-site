@@ -34,7 +34,8 @@ class SafeJWTAuthentication(BaseAuthentication):
                 access_token, os.getenv('SECRET_KEY'), algorithms=['HS256'])
 
         except jwt.ExpiredSignatureError:
-            raise exceptions.AuthenticationFailed('access_token expired')
+            raise exceptions.AuthenticationFailed(
+                'Need to be sign in to access this page')
 
         except IndexError:
             raise exceptions.AuthenticationFailed('Token prefix missing')

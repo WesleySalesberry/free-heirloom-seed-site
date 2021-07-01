@@ -31,6 +31,9 @@ def login_view(request):
 
     customer = CustomerModel.objects.filter(email=email).first()
 
+    # if not customer.email:
+    #     raise AuthenticationFailed('No User Found With These Credentals')
+
     if not customer.check_password(password):
         raise AuthenticationFailed('No User Found With These Credentals')
 
