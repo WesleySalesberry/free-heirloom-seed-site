@@ -1,5 +1,19 @@
 import axios from 'axios';
 
+function setStorage(key, value){
+    sessionStorage.setItem(`${key}`, JSON.stringify(value))
+}
+
+function getToken() {
+    let storedToken
+    try {
+        storedToken = JSON.parse(sessionStorage.getItem("token"));
+        return storedToken
+    } catch {
+        return "";
+    }
+}
+
 class API {
     axiosInstance = null;
     constructor() {
@@ -121,22 +135,20 @@ class API {
             console.log(error)
         }
     }
+
+    async addItemToCart(slug){
+        try {
+            const { data } = await this.axiosInstance.get(`http://127.0.0.1:8000/api/v1/seeds/${slug}/`)
+            
+            return data
+        } catch (error) {
+            console.log(error)
+        }
+    }
     
 }
 
-function setStorage(key, value){
-    sessionStorage.setItem(`${key}`, JSON.stringify(value))
-}
 
-function getToken() {
-    let storedToken
-    try {
-        storedToken = JSON.parse(sessionStorage.getItem("token"));
-        return storedToken
-    } catch {
-        return "";
-    }
-}
 
 
 export default new API();

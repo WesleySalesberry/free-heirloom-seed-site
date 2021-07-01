@@ -12,9 +12,11 @@ import { Notification } from '../components/Notification'
 
 export const ShippingPage = ({ history }) => {
     const dispatch = useDispatch()
+    const customer = useSelector(state => state.auth)
     const shipping = useSelector(state => state.address)
 
     const { address, error } = shipping
+    const { user } = customer
 
     const [myAddress, setAddress] = useState("")
     const [city, setCity] = useState("")
@@ -22,22 +24,28 @@ export const ShippingPage = ({ history }) => {
     const [postalCode, setPostalCode] = useState("")
     const [country, setCountry] = useState("")
 
+    useEffect(() => {
+        if(!user){
+            history.push('/login')
+        }
+    }, [ user ])
+
     const handleFormSubmit = (evt) => {
         evt.preventDefault();
         if(address === null){
-            dispatch(createAddress(myAddress, city, state, postalCode, country))
-            history.push('/payment')
+            history.push('/order')
+            dispatch(createAddress(myAddress, city, postalCode, state, country))
         }else{
-            dispatch(updateAddress(myAddress, city, state, postalCode, country))
-            history.push('/payment')
+            dispatch(updateAddress(myAddress, city, postalCode, state, country))
+            history.push('/order')
         }
     }
 
     return (
         <FormContainer>
             {
-                address === null ? 
-                    <h2 className="text-center">Create Address</h2>
+                address === null ?
+                    <h2 className="text-center">Create Address</h2> 
                 : 
                     <h2 className="text-center">Update Address</h2>
             }
@@ -56,9 +64,16 @@ export const ShippingPage = ({ history }) => {
                         <FormInputComponent
                             name={"city"}
                             label={'City'}
-                            placeholder={address&&address.city ? `City: ${address.city}` : "Enter Last Name"}
+                            placeholder={address&&address.city ? `City: ${address.city}` : "Enter City"}
                             value={city}
                             onChange={(evt) => setCity(evt.target.value)}
+                        />
+                        <FormInputComponent
+                            name={"postalCode"}
+                            label={'Postal Code'}
+                            placeholder={address&&address.postal_code ? `Postal Code: ${address.postal_code}` : "Enter Postal Code"}
+                            value={postalCode}
+                            onChange={(evt) => setPostalCode(evt.target.value)}
                         />
                         <FormInputComponent
                             name={"state"}
@@ -68,16 +83,9 @@ export const ShippingPage = ({ history }) => {
                             onChange={(evt) => setState(evt.target.value)}
                         />
                         <FormInputComponent
-                            name={"postalCode"}
-                            label={'Postal Code'}
-                            placeholder={address&&address.postal_code ? `Postal: ${address.postal_code}` : "Enter Postal Code"}
-                            value={postalCode}
-                            onChange={(evt) => setPostalCode(evt.target.value)}
-                        />
-                        <FormInputComponent
                             name={"country"}
                             label={'Country'}
-                            placeholder={address&&address.country ? `Country: ${address.country}` : "Enter Last Name"}
+                            placeholder={address&&address.country ? `Country: ${address.country}` : "Enter Country"}
                             value={country}
                             onChange={(evt) => setCountry(evt.target.value)}
                         />
@@ -88,14 +96,14 @@ export const ShippingPage = ({ history }) => {
                                     type="submit"
                                     variant="primary"
                                 >Create Address</Button>
-                            : 
+                            :
                                 <>
                                     <Button
                                         className="btn-block"
                                         type="submit"
                                         variant="primary"
                                     >Update Address</Button>
-                                    <LinkContainer to="/payment">
+                                    <LinkContainer to="/order">
                                         <Nav.Link>Use this address</Nav.Link>
                                     </LinkContainer>
                                 </>

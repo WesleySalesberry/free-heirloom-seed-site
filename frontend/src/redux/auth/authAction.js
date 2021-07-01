@@ -131,7 +131,26 @@ export const updateUser = (first_name, last_name, email) => async (dispatch) => 
         // console.log(error.response)
         dispatch({
             type: USER_UPDATE_FAIL,
-            payload: error.response
+            payload: error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+                
+        }) 
+    }
+}
+
+export const getUser = () => async dispatch => {
+    dispatch({
+        type: USER_PROFILE_REQUEST
+    })
+    try {
+        const user = await api.getUser()
+
+        dispatch({
+            type: USER_PROFILE_SUCCESS,
+            payload: user
         })
+    } catch (error) {
+        console.log(error)
     }
 }

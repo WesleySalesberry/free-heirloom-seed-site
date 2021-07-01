@@ -17,10 +17,13 @@ const reducer = combineReducers({
 
 const userStroage = JSON.parse(sessionStorage.getItem('user'))
 const addressStroage = JSON.parse(sessionStorage.getItem('address'))
+const cartStroage = JSON.parse(localStorage.getItem('cartItems'))
 
 const initalState = {
+    // cart: { cartItems: cartStroage },
     auth: {user: userStroage}, 
-    address: {address: addressStroage}
+    address: {address: addressStroage},
+    
 }
 
 const middleware = [ thunk ]

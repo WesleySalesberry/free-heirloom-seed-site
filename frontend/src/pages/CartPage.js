@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, ListGroup, Image, Button, Card } from 'react-bootstrap';
 import { addToCart, removeItemFromCart, emptyCart } from '../redux/cart/cartAction'
@@ -9,14 +9,19 @@ export const CartPage = ({ match, location, history }) => {
     const seedName = match.params.slug
     const dispatch = useDispatch()
     const cart = useSelector(state => state.cart)
+    const user = useSelector(state => state.auth)
     const { cartItems } = cart
 
+    const redirect = location.search ? location.search.split('=')[1] : '/profile'
+
     useEffect(() => {
+        if(!user){
+            history.push(redirect)
+        }
         if(seedName){
             dispatch(addToCart(seedName))
         }
     }, [dispatch, seedName ])
-
 
     const removeFromCart = (id) =>  {
         dispatch(removeItemFromCart(id))
@@ -24,7 +29,6 @@ export const CartPage = ({ match, location, history }) => {
 
     const clearItems = () => dispatch(emptyCart())
     const checkoutHandler = () => history.push('/login?redirect=shipping')
-    
 
     return (
         <Row mt={4}>

@@ -12,7 +12,6 @@ import {
     USER_PROFILE_REQUEST, 
     USER_PROFILE_SUCCESS, 
     USER_PROFILE_FAIL,
-    USER_PROFILE_CLEAR,
 
     USER_UPDATE_REQUEST,
     USER_UPDATE_SUCCESS,
@@ -27,14 +26,16 @@ export const authReducer = (state={}, action) => {
 
         case USER_LOGIN_REQUEST:
         case USER_REGISTER_REQUEST:
+        case USER_PROFILE_REQUEST:
             return{
                 loading: true,
             }
+
         case USER_REGISTER_SUCCESS:
             return {
                 loading: false,
             }
-
+        case USER_PROFILE_SUCCESS:
         case USER_LOGIN_SUCCESS:
             return {
                 loading: false,
@@ -49,6 +50,7 @@ export const authReducer = (state={}, action) => {
         case USER_LOGIN_FAIL:
         case USER_REGISTER_FAIL:
         case USER_UPDATE_FAIL:
+        case USER_PROFILE_FAIL:
             return {
                 loading: false,
                 error: payload

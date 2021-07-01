@@ -3,7 +3,7 @@ import {Row, Col, Form, Button, Container, Table } from 'react-bootstrap'
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { updateUser } from '../redux/auth/authAction'
+import { getUser, updateUser } from '../redux/auth/authAction'
 import { updateAddress } from '../redux/shipping/shippingAction';
 
 import { FormInputComponent } from '../components/FormInputComponent';
@@ -13,7 +13,7 @@ import { Notification } from '../components/Notification';
 
 export const ProfilePage = ({ history }) => {
     const auth = useSelector(state => state.auth)
-    const { user } = auth
+    const { user, error } = auth
 
     const addy = useSelector(state => state.address)
     const { address } = addy
@@ -38,6 +38,7 @@ export const ProfilePage = ({ history }) => {
     const handleUserUpdate = (evt) => {
         evt.preventDefault()
         dispatch(updateUser(firstName, lastName, email))
+        dispatch(getUser())
         setFirstName("")
         setLastName("")
         setEmail("")
@@ -46,7 +47,7 @@ export const ProfilePage = ({ history }) => {
 
     const handleAddressUpdate = (evt) => {
         evt.preventDefault()
-        dispatch(updateAddress(myAddress, city, state, postalCode, country))
+        dispatch(updateAddress(myAddress, city, postalCode, state,  country))
         setAddress("")
         setCity("")
         setState("")
@@ -77,9 +78,9 @@ export const ProfilePage = ({ history }) => {
                 </Col>
             </Row>
             <Row className="my-4">
-                {/* {
+                {
                     error && <Notification variant="danger">{error}</Notification>
-                } */}
+                }
                 <Col md={6}>
                     <h2 className="text-center">Update Login Infomation</h2>
                     <Form onSubmit={handleUserUpdate}>

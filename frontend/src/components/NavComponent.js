@@ -1,12 +1,12 @@
 import React from 'react'
-import { Nav} from 'react-bootstrap'
+import { Nav, Badge} from 'react-bootstrap'
 import { LinkContainer, NavDropdown } from 'react-router-bootstrap'
 
 export const NavComponent = ({ link, leadIcon, icon, title, user, onClick}) => {
     return (
         <Nav>
             <LinkContainer to="/cart">
-                <Nav.Link><i className="fas fa-shopping-cart"></i> Cart</Nav.Link>
+                <Nav.Link><i className="fas fa-shopping-cart"></i>Cart </Nav.Link>
             </LinkContainer>
             {
                 user ?
