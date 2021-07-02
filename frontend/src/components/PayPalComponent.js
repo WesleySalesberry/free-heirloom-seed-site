@@ -1,18 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import ReactDOM from "react-dom"
 
-import { Form, Button, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { FormContainer } from './FormContainer'
 
-// const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
-
-export const PayPalComponent = ({ total }) => {
+export const PayPalComponent = ({ items, total }) => {
     const [paidFor, setPadFor ] = useState(false)
     const [error, setError ] = useState()
     const paypalRef = useRef()
 
-    const orderTotal = parseFloat(total).toFixed(2)
-    
+    const orderTotal = parseFloat(total).toFixed(2)    
 
     useEffect(() => {
         window.paypal
@@ -40,8 +35,8 @@ export const PayPalComponent = ({ total }) => {
 
                 onApprove: async (data, actions) => {
                     const order = await actions.order.capture();
-                    console.log(order)
-                    console.log(order.purchase_units[0].payments)
+                    const finishedOrder = order.purchase_units[0].payments
+
                 },
 
                 onError: err => {

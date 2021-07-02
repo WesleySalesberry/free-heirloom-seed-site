@@ -42,11 +42,6 @@ export const authReducer = (state={}, action) => {
                 user: payload
             }
 
-        case USER_REGISTER_SUCCESS:
-            return {
-                loading: false,
-            }
-
         case USER_LOGIN_FAIL:
         case USER_REGISTER_FAIL:
         case USER_UPDATE_FAIL:

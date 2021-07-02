@@ -1,6 +1,6 @@
 import React from 'react'
-import { Nav, Badge} from 'react-bootstrap'
-import { LinkContainer, NavDropdown } from 'react-router-bootstrap'
+import { Nav } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 
 export const NavComponent = ({ link, leadIcon, icon, title, user, onClick}) => {
     return (

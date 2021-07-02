@@ -13,7 +13,7 @@ export const SeedPage = ({ match, history }) => {
 
     useEffect(() => {
         dispatch(seedDetails(match.params.slug))
-    }, [dispatch])
+    }, [dispatch, match.params.slug])
 
     const addToCartHandler = (slug) => {
         history.push(`/cart/${slug}`)

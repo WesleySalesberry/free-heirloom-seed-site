@@ -9,9 +9,7 @@ import {
 
     ADDRESS_UPDATE_REQUEST,
     ADDRESS_UPDATE_SUCCESS,
-    ADDRESS_UPDATE_FAIL,
-
-    ADDRESS_CLEAR,
+    
 } from "../constants/shippingConstants";
 
 import api from "../../utils/api";

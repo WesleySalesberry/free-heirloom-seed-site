@@ -1,4 +1,4 @@
-import React,{ Children, useState } from 'react'
+import React,{ useState } from 'react'
 import { Alert } from 'react-bootstrap'
 
 export const Notification = ({ variant, children }) => {
@@ -7,7 +7,7 @@ export const Notification = ({ variant, children }) => {
     return  (
         
             isShowing && <Alert
-                className="text-center"
+                className="text-center text-dark"
                 variant={variant}
                 onClose={() => setIsShowing(false)}
                 dismissible
@@ -16,21 +16,5 @@ export const Notification = ({ variant, children }) => {
             </Alert>
         
     )
-
-    // return isShowing ? 
-    // (
-    //     <Alert
-    //         className="text-center"
-    //         variant={variant}
-    //         onClose={() => setIsShowing(false)}
-    //         dismissible
-    //     >
-    //             {children}
-    //     </Alert>
-    // )
-    // :
-    // (
-    //     <div></div>
-    // )
 
 }

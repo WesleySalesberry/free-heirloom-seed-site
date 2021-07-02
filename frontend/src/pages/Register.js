@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { FormContainer } from '../components/FormContainer'
 import { Form, Button, Row, Col } from 'react-bootstrap'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { register } from '../redux/auth/authAction'
 import { Notification } from '../components/Notification'
 
-export const Register = ({ location, history }) => {
+export const Register = ({ history }) => {
     const [ first_name, setFirst_Name ] = useState('')
     const [ last_name, setLast_Name ] = useState('')
     const [ email, setEmail ] = useState('')
@@ -19,14 +19,6 @@ export const Register = ({ location, history }) => {
 
     const auth = useSelector(state => state.auth)
     const { error } = auth
-
-    // const redirect = location.search ? location.search.split('=')[1] : '/'
-
-    // useEffect(() => {
-    //     if(isLoggedIn){
-    //         history.push('/login')
-    //     }
-    // }, [history]);
 
     const submitHandler = (evt) => {
         evt.preventDefault()

@@ -4,7 +4,7 @@ import { Form, Button, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { login, profile } from '../redux/auth/authAction'
+import { login } from '../redux/auth/authAction'
 import { Notification } from '../components/Notification'
 
 export const Login = ({ location, history }) => {

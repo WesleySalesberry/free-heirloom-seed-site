@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { Form, Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { useSelector } from 'react-redux';
+import { Form, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom' 
 import { LinkContainer } from 'react-router-bootstrap'
 import { Nav} from 'react-bootstrap'
 
-import { FormContainer } from '../components/FormContainer'
 import { PayPalComponent } from '../components/PayPalComponent'
 import { MailInfoComponent } from '../components/MailInfoComponent'
 
 import payments from '../utils/paymentsMethods'
+import { Notification } from '../components/Notification';
 
 export const PlaceOrder = ({ history }) => {
-    const dispatch = useDispatch()
     const myUser = useSelector(state => state.auth)
     const shipping = useSelector(state => state.address)
     const myCart = useSelector(state => state.cart)
@@ -29,7 +28,10 @@ export const PlaceOrder = ({ history }) => {
         if(!user){
             history.push('/login')
         }
-    }, [user])
+        if(cartItems.length === 0){
+            history.push('/cart')
+        }
+    }, [user, history, cartItems.length ])
 
     const handlePayment = (evt) => {
         evt.preventDefault()
@@ -80,7 +82,25 @@ export const PlaceOrder = ({ history }) => {
                                 <Nav.Link>Update Address?</Nav.Link>
                             </LinkContainer>
                         </ListGroup.Item>
-                        <ListGroup.Item>
+                    </ListGroup>
+                </Col>
+                <Col md={4}>
+                    <Card>
+                        <ListGroup variant="flush">
+                            <ListGroup.Item className="text-center">
+                                <h2>Order Summary</h2>
+                            </ListGroup.Item>
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>
+                                        <h5>Total:</h5>
+                                    </Col>
+                                    <Col>
+                                        <p>${total}</p>
+                                    </Col>
+                                </Row>
+                            </ListGroup.Item>
+                              <ListGroup.Item>
                             <h2>Payment Method</h2>
                             <Form onSubmit={handlePayment}>
                                 <Form.Group>
@@ -107,9 +127,17 @@ export const PlaceOrder = ({ history }) => {
                                 }
                                 {
                                     payment === 'paypal' ?
-                                        <PayPalComponent 
-                                        total={total}
-                                    />
+                                        <div>
+                                            <Notification
+                                                variant={'warning'}
+                                            >
+                                                Paypal is in test mode
+                                            </Notification>
+                                            <PayPalComponent
+                                                items={cartItems} 
+                                                total={total}
+                                            />
+                                        </div>
                                     :
                                         ""
                                 }
@@ -117,33 +145,6 @@ export const PlaceOrder = ({ history }) => {
                             </Form>
 
                         </ListGroup.Item>
-                    </ListGroup>
-                </Col>
-                <Col md={4}>
-                    <Card>
-                        <ListGroup variant="flush">
-                            <ListGroup.Item className="text-center">
-                                <h2>Order Summary</h2>
-                            </ListGroup.Item>
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>
-                                        <h5>Total:</h5>
-                                    </Col>
-                                    <Col>
-                                        <p>${total}</p>
-                                    </Col>
-                                </Row>
-                            </ListGroup.Item>
-                            <ListGroup.Item>
-                                <Button
-                                    type="button"
-                                    className="btn-block"
-                                    disabled
-                                >
-                                    Place Order
-                                </Button>
-                            </ListGroup.Item>
                         </ListGroup>
                     </Card>
                 </Col>

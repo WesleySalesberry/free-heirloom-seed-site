@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, ListGroup, Image, Button, Card } from 'react-bootstrap';
 import { addToCart, removeItemFromCart, emptyCart } from '../redux/cart/cartAction'
@@ -21,7 +21,7 @@ export const CartPage = ({ match, location, history }) => {
         if(seedName){
             dispatch(addToCart(seedName))
         }
-    }, [dispatch, seedName ])
+    }, [dispatch, seedName, history, user, redirect ])
 
     const removeFromCart = (id) =>  {
         dispatch(removeItemFromCart(id))

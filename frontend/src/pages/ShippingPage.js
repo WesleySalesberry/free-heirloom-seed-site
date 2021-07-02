@@ -28,7 +28,7 @@ export const ShippingPage = ({ history }) => {
         if(!user){
             history.push('/login')
         }
-    }, [ user ])
+    }, [ user, history ])
 
     const handleFormSubmit = (evt) => {
         evt.preventDefault();
@@ -90,8 +90,8 @@ export const ShippingPage = ({ history }) => {
                             onChange={(evt) => setCountry(evt.target.value)}
                         />
                         {
-                            address === null ? 
-                                <Button
+                            address === null ?
+                                 <Button
                                     className="btn-block"
                                     type="submit"
                                     variant="primary"

@@ -1,6 +1,6 @@
 import React from 'react'
-import { Navbar, Nav, Container } from 'react-bootstrap'
-import { LinkContainer, NavDropdown } from 'react-router-bootstrap'
+import { Navbar, Container } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 
 import { logout } from '../redux/auth/authAction'
 import { useDispatch, useSelector } from 'react-redux'
