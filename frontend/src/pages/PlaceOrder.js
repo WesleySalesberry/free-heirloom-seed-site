@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom' 
@@ -13,10 +13,11 @@ import payments from '../utils/paymentsMethods'
 
 export const PlaceOrder = ({ history }) => {
     const dispatch = useDispatch()
-    const user = useSelector(state => state.auth)
+    const myUser = useSelector(state => state.auth)
     const shipping = useSelector(state => state.address)
     const myCart = useSelector(state => state.cart)
 
+    const { user } = myUser
     const { address } = shipping
     const { cartItems } = myCart
 
@@ -24,9 +25,11 @@ export const PlaceOrder = ({ history }) => {
 
    const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)
 
-    if(!user){
-        history.push('/login')
-    }
+    useEffect(() => {
+        if(!user){
+            history.push('/login')
+        }
+    }, [user])
 
     const handlePayment = (evt) => {
         evt.preventDefault()
@@ -87,10 +90,10 @@ export const PlaceOrder = ({ history }) => {
                                         <Form.Check
                                             key={itm.id}
                                             type="checkbox"
+                                            checked={payment === itm.name}
                                             label={itm.label}
                                             name={itm.name}
                                             value={itm.name}
-                                            checked={payment === itm.name}
                                             onChange={(evt) => setPayment(evt.target.value)}
                                         >
                                         </Form.Check>
@@ -103,14 +106,10 @@ export const PlaceOrder = ({ history }) => {
                                     ""
                                 }
                                 {
-                                    payment === 'credit' ?
-                                    <PayPalComponent />
-                                    :
-                                    ""
-                                }
-                                {
                                     payment === 'paypal' ?
-                                        <Button type="button">Paypal Button</Button>
+                                        <PayPalComponent 
+                                        total={total}
+                                    />
                                     :
                                         ""
                                 }
