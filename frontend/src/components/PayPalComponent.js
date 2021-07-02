@@ -11,9 +11,18 @@ export const PayPalComponent = ({ total }) => {
     const [error, setError ] = useState()
     const paypalRef = useRef()
 
+    const orderTotal = parseFloat(total).toFixed(2)
+    
+
     useEffect(() => {
         window.paypal
             .Buttons({
+                style: {
+                    color:  'black',
+                    shape:  'pill',
+                    label:  'pay',
+                    height: 40
+                },
                 createOrder: (data, actions) => {
                     return actions.order.create({
                         initent: 'CAPTURE',
@@ -22,7 +31,7 @@ export const PayPalComponent = ({ total }) => {
                                 description: "Free Heirloom Checkout",
                                 amount:{
                                     currency_code: 'USD',
-                                    value: 10.00,
+                                    value: orderTotal,
                                 }
                             }
                         ]
@@ -32,6 +41,7 @@ export const PayPalComponent = ({ total }) => {
                 onApprove: async (data, actions) => {
                     const order = await actions.order.capture();
                     console.log(order)
+                    console.log(order.purchase_units[0].payments)
                 },
 
                 onError: err => {
@@ -43,13 +53,12 @@ export const PayPalComponent = ({ total }) => {
     }, [total])
     
     return (
-        <div>
-            <ListGroup>
-                <div>Total: {total}</div>
+        <div className="mt-5">
+            <FormContainer>
                 <div 
                     ref={paypalRef}
                 />
-            </ListGroup>
+            </FormContainer>
         </div>
     )
 }
