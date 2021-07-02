@@ -1,3 +1,5 @@
+import { uuid } from 'uuidv4';
+
 const paymentMethods = [
     {
         "id": 1,
@@ -6,11 +8,6 @@ const paymentMethods = [
     },
     {
         "id": 2,
-        "label": "Debt/Credit",
-        "name": "credit",
-    },
-    {
-        "id": 3,
         "label": "Mail",
         "name": "mail",
     }
