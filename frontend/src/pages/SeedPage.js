@@ -63,7 +63,10 @@ export const SeedPage = ({ match, history }) => {
                                             <Col>
                                                 <strong>
                                                     {
-                                                        seed.countInStock > 0 ? "In Stock" : "Out of Stock"
+                                                        seed.countInStock > 0 ? 
+                                                            <p className="text-success">In Stock</p> 
+                                                        : 
+                                                            <p className="text-danger">Out of Stock</p>
                                                     }
                                                 </strong>
                                             </Col>
@@ -75,7 +78,7 @@ export const SeedPage = ({ match, history }) => {
                                             disabled={seed.countInStock === 0}type="button"
                                             onClick={() => addToCartHandler(seed.slug)}
                                         >
-                                            Order
+                                            Add to Cart
                                         </Button>
                                     </ListGroup.Item>
                                 </ListGroup>

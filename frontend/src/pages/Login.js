@@ -16,7 +16,7 @@ export const Login = ({ location, history }) => {
     const auth = useSelector(state => state.auth)
     const { user, error } = auth
 
-    const redirect = location.search ? location.search.split('=')[1] : '/'
+    const redirect = location.search ? location.search.split('=')[1] : '/profile'
 
 
     useEffect(() => {

@@ -2,9 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { FormContainer } from './FormContainer'
 
+import { Redirect } from 'react-router-dom'
+
+import { Notification } from './Notification'
+
 export const PayPalComponent = ({ items, total }) => {
     const [paidFor, setPadFor ] = useState(false)
-    const [error, setError ] = useState()
+    const [error, setError ] = useState({})
     const paypalRef = useRef()
 
     const orderTotal = parseFloat(total).toFixed(2)    
@@ -14,29 +18,76 @@ export const PayPalComponent = ({ items, total }) => {
             .Buttons({
                 style: {
                     color:  'black',
-                    shape:  'pill',
+                    shape:  'rect',
                     label:  'pay',
                     height: 40
                 },
                 createOrder: (data, actions) => {
                     return actions.order.create({
-                        initent: 'CAPTURE',
+                        application_context: {
+                            shipping_preferences: 'SET_PROVIDED_ADDRESS', 
+                        },
                         purchase_units: [
                             {
                                 description: "Free Heirloom Checkout",
                                 amount:{
                                     currency_code: 'USD',
                                     value: orderTotal,
-                                }
+                                },
+                                initent: 'CAPTURE',
+                                shipping: {
+                                    name:{
+                                        full_name:'Test User'
+                                    },
+                                    address:{
+                                        address_line_1: '123 Any st',
+                                        address_line_2: '',
+                                        admin_area_2: 'Any Town',
+                                        admin_area_1: 'NC',
+                                        postal_code: '28572',
+                                        country_code: 'US'
+                                    },
+                                    options:[
+                                        {
+                                            id: "SHIPPING_1",
+                                            label: "Free Shipping",
+                                            type: "SHIPPING",
+                                            selected: true,
+                                            amount: {
+                                                value: 0.00,
+                                                currency_code: "USD"
+                                            }
+                                        },
+                                        {
+                                            id: "PICKUP_2",
+                                            label: "Free Pickup",
+                                            type: "PICKUP",
+                                            selected: false,
+                                            amount: {
+                                                value: 0.00,
+                                                currency_code: "USD"
+                                            }
+                                        }
+                                    ]
+                                },
                             }
                         ]
                     })
                 },
 
+                onShippingChange: function(data, actions) {
+                    console.log("SELECTED_OPTION", data.selected_shipping_option); // data.selected_shipping_option contains the selected shipping option
+                },
+
                 onApprove: async (data, actions) => {
                     const order = await actions.order.capture();
-                    const finishedOrder = order.purchase_units[0].payments
+                    const finishedOrder = order.purchase_units[0]
+                    //payment: to get create time, final capture, status
+                    //shipping: to get updated shipping address
+                },
 
+                onCancel: function (data, actions) {
+                    console.log(actions.redirect)
                 },
 
                 onError: err => {
@@ -48,7 +99,7 @@ export const PayPalComponent = ({ items, total }) => {
     }, [total])
     
     return (
-        <div className="mt-5">
+        <div className="mt-2">
             <FormContainer>
                 <div 
                     ref={paypalRef}
@@ -57,31 +108,3 @@ export const PayPalComponent = ({ items, total }) => {
         </div>
     )
 }
-
-// return (
-//         <div>
-//             <FormContainer>
-//                 <PayPalButton
-//                     createOrder={(data, actions) => createOrder(data, actions)}
-//                     onApprove={(data, actions) => onApprove(data, actions)}
-//                 />
-//             </FormContainer>
-//         </div>
-//     );
-
-
-//  const createOrder = (data, actions) => {
-        // return actions.order.create({
-        //     purchase_units: [
-        //         {
-        //             amount:{
-        //                 value: total,
-        //             }
-        //         }
-        //     ]
-        // })
-//     }
-    
-//     const  onApprove = (data, actions) => {
-//         return actions.order.capture();
-//     }

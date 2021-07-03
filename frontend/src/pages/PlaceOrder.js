@@ -39,14 +39,14 @@ export const PlaceOrder = ({ history }) => {
     }
 
     return (
-        <div>
+        <div className="mt-3">
             <Row>
                 <Col md={8}>
-                    <ListGroup>
+                    <ListGroup variant="flush">
                         <ListGroup.Item>
                             <h2>Order Item</h2>
-                            <ListGroup variant="flush">
-                                <ListGroup.Item>
+                            <ListGroup>
+                                <ListGroup.Item variant="dark">
                                     <Row>
                                         {
                                 cartItems.sort((it1, it2) => it1.seedID.localeCompare(it2.seedID)).map(item => (
@@ -71,6 +71,12 @@ export const PlaceOrder = ({ history }) => {
                                 </ListGroup.Item>
                             </ListGroup>
                         </ListGroup.Item>
+                        {
+                            payment === "mail" ?
+                            "show address"
+                            :
+                            "use paypal address"
+                        }
                         <ListGroup.Item>
                             <h2>Shipping Address</h2>
                             <p>Street: <strong>{address&&address.address}</strong></p>
