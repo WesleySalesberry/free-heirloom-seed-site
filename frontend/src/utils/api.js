@@ -145,7 +145,36 @@ class API {
             console.log(error)
         }
     }
-    
+
+    async createOrder(payment_method, confirmation, total_price, is_paid, order_created){
+        try {
+            const { data } = await this.axiosInstance.post('/order/create-order/',
+                {
+                    "payment_method": payment_method,
+                    "confirmation": confirmation,
+                    "total_price": total_price,
+                    "is_paid": is_paid,
+                    "order_created": order_created
+                }) 
+            return data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async addOrder(orderItems){
+        try {
+            const { data } = await this.axiosInstance.post('/order/add-order/',
+                
+                { 
+                    orderItems
+                }
+            ) 
+                return data
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
 
 

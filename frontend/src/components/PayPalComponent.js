@@ -3,10 +3,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { FormContainer } from './FormContainer'
 
 import { Redirect } from 'react-router-dom'
+import api from '../utils/api'
 
-import { Notification } from './Notification'
-
-export const PayPalComponent = ({ items, total }) => {
+export const PayPalComponent = ({ items, total, history }) => {
     const [paidFor, setPadFor ] = useState(false)
     const [error, setError ] = useState({})
     const paypalRef = useRef()
@@ -68,10 +67,13 @@ export const PayPalComponent = ({ items, total }) => {
                                                 currency_code: "USD"
                                             }
                                         }
-                                    ]
+                                    ],
                                 },
                             }
-                        ]
+                        ],
+
+                        
+                        
                     })
                 },
 
@@ -82,12 +84,24 @@ export const PayPalComponent = ({ items, total }) => {
                 onApprove: async (data, actions) => {
                     const order = await actions.order.capture();
                     const finishedOrder = order.purchase_units[0]
-                    //payment: to get create time, final capture, status
-                    //shipping: to get updated shipping address
+
+                const myOrder = await api.createOrder(
+                        "paypal",
+                        finishedOrder.payments.captures[0].id,
+                        total,
+                        finishedOrder.payments.captures[0].final_capture,
+                        finishedOrder.payments.captures[0].create_time,
+                    )
+
+                    await api.addOrder({ 
+                            item: items,
+                            order: myOrder
+                        })
+
                 },
 
                 onCancel: function (data, actions) {
-                    console.log(actions.redirect)
+                    history.push('/cart')
                 },
 
                 onError: err => {

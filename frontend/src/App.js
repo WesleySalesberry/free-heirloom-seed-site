@@ -13,6 +13,7 @@ import { Register } from './pages/Register';
 import { ShippingPage } from './pages/ShippingPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { PlaceOrder } from './pages/PlaceOrder';
+import { ConfirmationPage } from './pages/ConfirmationPage'
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route exact path="/shipping" component={ShippingPage} />
             <Route exact path="/order" component={PlaceOrder} />
             <Route exact path="/profile" component={ProfilePage} />
+            <Route exact path="/confirmation" component={ConfirmationPage} />
             <Route exact path="/seed/:slug" component={SeedPage} />
             <Route exact path="/cart/:slug?" component={CartPage} />
           </Switch>
