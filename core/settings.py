@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'seeds.apps.SeedsConfig',
     'authentication.apps.AuthenticationConfig',
     'shipping.apps.ShippingConfig',
+    'order.apps.OrderConfig',
 ]
 
 REST_FRAMEWORK = {
