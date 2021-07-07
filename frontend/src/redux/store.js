@@ -6,6 +6,7 @@ import { seedListReducer, seedDetailReducer } from './seeds/seedReducer'
 import { cartReducer } from './cart/cartReducer'
 import { authReducer } from './auth/authReducer'
 import { addressReducer } from './shipping/shippingReducer'
+import { orderListReducer  } from './orders/orderReducer'
 
 const reducer = combineReducers({
     seedLists: seedListReducer,
@@ -13,6 +14,7 @@ const reducer = combineReducers({
     cart: cartReducer,
     auth: authReducer,
     address: addressReducer,
+    orderList: orderListReducer
 })
 
 const userStroage = JSON.parse(sessionStorage.getItem('user'))

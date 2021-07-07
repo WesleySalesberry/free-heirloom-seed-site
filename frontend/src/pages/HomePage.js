@@ -28,9 +28,9 @@ export const HomePage = () => {
                     :
                     <Row className="mx-auto">
                         {
-                            seeds && seeds.map(item => (
-                                <Col key={item.id} sm={12} md={6} lg={4} xl={3}>
-                                    <Seeds product={item}/>
+                            seeds && seeds.map(itm => (
+                                <Col key={itm.id} sm={12} md={6} lg={4} xl={3}>
+                                    <Seeds product={itm}/>
                                 </Col>
                             ))
                         }

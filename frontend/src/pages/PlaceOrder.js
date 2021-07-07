@@ -15,10 +15,13 @@ export const PlaceOrder = ({ history }) => {
     const myUser = useSelector(state => state.auth)
     const shipping = useSelector(state => state.address)
     const myCart = useSelector(state => state.cart)
+    const orderList = useSelector( state => state.orderList )
+    
 
     const { user } = myUser
     const { address } = shipping
     const { cartItems } = myCart
+    const { order } = orderList
 
     const [ payment, setPayment ] = useState('')
 

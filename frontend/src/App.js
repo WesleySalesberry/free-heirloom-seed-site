@@ -14,6 +14,7 @@ import { ShippingPage } from './pages/ShippingPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { PlaceOrder } from './pages/PlaceOrder';
 import { ConfirmationPage } from './pages/ConfirmationPage'
+import { NotFound } from './pages/NotFound';
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             <Route exact path="/confirmation" component={ConfirmationPage} />
             <Route exact path="/seed/:slug" component={SeedPage} />
             <Route exact path="/cart/:slug?" component={CartPage} />
+            <Route path="*" component={NotFound} /> 
           </Switch>
         </Container>
       </main>

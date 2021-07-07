@@ -21,3 +21,8 @@ h2{
 h3{
     padding: 1rem 0;
 }
+
+.fa-check-square{
+    font-size: 2.5em;
+    color: green;
+}

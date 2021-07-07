@@ -175,6 +175,15 @@ class API {
             console.log(error)
         }
     }
+
+    async getOrders(){
+        try {
+            const { data } = await this.axiosInstance.get('/order/get-orders/') 
+                return data
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
 
 

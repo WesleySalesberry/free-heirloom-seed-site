@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom'
 import api from '../utils/api'
 
 export const PayPalComponent = ({ items, total, history }) => {
-    const [paidFor, setPadFor ] = useState(false)
+    const [paidFor, setPaidFor ] = useState(false)
     const [error, setError ] = useState({})
     const paypalRef = useRef()
 
@@ -98,6 +98,8 @@ export const PayPalComponent = ({ items, total, history }) => {
                             order: myOrder
                         })
 
+                    setPaidFor(true)
+
                 },
 
                 onCancel: function (data, actions) {
@@ -114,11 +116,18 @@ export const PayPalComponent = ({ items, total, history }) => {
     
     return (
         <div className="mt-2">
-            <FormContainer>
-                <div 
-                    ref={paypalRef}
-                />
-            </FormContainer>
+            {
+                paidFor ? 
+                    <Redirect
+                        to="/confirmation"
+                    />
+                :
+                    <FormContainer>
+                        <div 
+                            ref={paypalRef}
+                        />
+                    </FormContainer>
+            }
         </div>
     )
 }

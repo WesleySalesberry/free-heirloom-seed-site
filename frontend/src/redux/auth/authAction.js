@@ -25,6 +25,8 @@ import { ADDRESS_SUCCESS, ADDRESS_CLEAR, ADDRESS_REQUEST } from "../constants/sh
 
 import { CLEAR_CART } from '../constants/cartConstants'
 
+import { ORDER_LIST_CLEAR } from '../constants/orderConstants';
+
 import api from '../../utils/api'
 
 export const login = (email, password) => async (dispatch) => {
@@ -105,6 +107,10 @@ export const logout = () => dispatch => {
 
     dispatch({
         type: ADDRESS_CLEAR
+    })
+    
+    dispatch({
+        type: ORDER_LIST_CLEAR
     })
 
     dispatch({

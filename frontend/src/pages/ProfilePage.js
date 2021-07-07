@@ -8,6 +8,7 @@ import { updateAddress } from '../redux/shipping/shippingAction';
 
 import { FormInputComponent } from '../components/FormInputComponent';
 import { Notification } from '../components/Notification';
+import { TableComponent } from '../components/TableComponent';
 
 
 
@@ -58,23 +59,11 @@ export const ProfilePage = ({ history }) => {
     
     return (
         <Container>
-            <h2 className="text-center">Welcome {
-                user&&user.first_name
-            }!</h2>
             <Row> 
                 <Col md={12}>
-                    <h2 className="text-center">My Orders</h2>
-                    <Table  striped bordered hover className="text-center" variant="dark">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Date</th>
-                                <th>Total</th>
-                                <th>Paid</th>
-                                <th>Delivered</th>
-                            </tr>
-                        </thead>
-                    </Table>
+                    <TableComponent
+                        name={user&&user.first_name}
+                    />
                 </Col>
             </Row>
             <Row className="my-4">
